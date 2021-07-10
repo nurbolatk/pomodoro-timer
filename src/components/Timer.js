@@ -1,39 +1,110 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import { Progress } from './Progress';
+
+function displayTimeLeft(secondsLeft) {
+  const minutes = Math.floor(secondsLeft / 60);
+  const seconds = secondsLeft % 60;
+  return `${pad(minutes)}:${pad(seconds)}`;
+}
+
+function pad(number) {
+  if (number < 10) {
+    return `0${number}`;
+  }
+  return number.toString();
+}
 
 export function Timer() {
   const [currentState, setCurrentState] = useState({
+    initial: 25,
     state: 'work',
-    duration: 6,
-  })
+    duration: 25,
+  });
 
-  const [isRunning, setIsRunning] = useState(false)
+  const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
-    console.log('am i running')
+    console.log('am i running');
     if (isRunning) {
-      console.log('what about me?')
-      const now = Date.now()
-      const then = now + currentState.duration * 1000
+      console.log('what about me?');
+      const now = Date.now();
+      const then = now + currentState.duration * 1000;
 
       const timer = setTimeout(() => {
-        const secondsLeft = Math.round((then - Date.now()) / 1000)
-        console.log('is this it?', secondsLeft)
+        const secondsLeft = Math.round((then - Date.now()) / 1000);
+        console.log('is this it?', secondsLeft);
         if (secondsLeft >= 0) {
           setCurrentState({
+            ...currentState,
             state: currentState.state,
             duration: secondsLeft,
-          })
+          });
+        } else {
+          setCurrentState({
+            ...currentState,
+            duration: currentState.initial,
+          });
+          setIsRunning(false);
         }
-      }, 1000)
+      }, 1000);
 
-      return () => clearTimeout(timer)
+      return () => clearTimeout(timer);
     }
-  }, [isRunning, currentState])
+  }, [isRunning, currentState]);
 
   return (
-    <div>
-      <article>{currentState.duration}</article>
-      <button onClick={() => setIsRunning(true)}>start</button>
-    </div>
-  )
+    <main>
+      <div className='tab-group'>
+        <button
+          className={`tab ${currentState.state === 'work' ? 'active' : ''}`}
+          onClick={() =>
+            setCurrentState({
+              initial: 25,
+              state: 'work',
+              duration: 25,
+            })
+          }
+        >
+          pomodoro
+        </button>
+        <button
+          className={`tab ${currentState.state === 'short' ? 'active' : ''}`}
+          onClick={() =>
+            setCurrentState({
+              initial: 5,
+              state: 'short',
+              duration: 5,
+            })
+          }
+        >
+          short break
+        </button>
+        <button
+          className={`tab ${currentState.state === 'long' ? 'active' : ''}`}
+          onClick={() =>
+            setCurrentState({
+              initial: 20,
+              state: 'long',
+              duration: 20,
+            })
+          }
+        >
+          long break
+        </button>
+      </div>
+      <button
+        onClick={() => setIsRunning(!isRunning)}
+        className='timer-container'
+      >
+        <div className='time'>{displayTimeLeft(currentState.duration)}</div>
+        <p className='timer-controls'>{isRunning ? 'pause' : 'start'}</p>
+        <Progress
+          time={currentState.initial}
+          isRunning={isRunning}
+          radius={150}
+          stroke={6}
+        />
+      </button>
+    </main>
+  );
 }
