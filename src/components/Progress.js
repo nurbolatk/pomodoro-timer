@@ -1,40 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-const PERIOD = 100;
-
-export const Progress = (props) => {
-  const { radius, stroke, time, isRunning } = props;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-
-  const max = time * 1000;
-  const [currentTimeInMillis, setCurrentTimeInMillis] = useState(max);
-
-  useEffect(() => setCurrentTimeInMillis(max), [max]);
-
-  useEffect(() => {
-    if (isRunning && currentTimeInMillis > 0) {
-      setTimeout(() => {
-        setCurrentTimeInMillis(currentTimeInMillis - PERIOD);
-      }, PERIOD);
-    }
-  }, [isRunning, currentTimeInMillis]);
-
-  const progress = currentTimeInMillis / max;
-  const strokeDashoffset = circumference - progress * circumference;
-
+export const Progress = ({ progress }) => {
+  const newDashArray = (progress * 846).toFixed(0);
   return (
-    <svg height={radius * 2} width={radius * 2} className='progress-overlay'>
+    <svg className='progress-overlay'>
       <circle
+        r={135}
+        cx={150}
+        cy={150}
+        className={`progress-bar`}
         stroke='var(--accent)'
-        fill='transparent'
-        strokeWidth={stroke}
-        strokeDasharray={circumference + ' ' + circumference}
-        style={{ strokeDashoffset }}
-        stroke-width={stroke}
-        r={normalizedRadius}
-        cx={radius}
-        cy={radius}
+        fill='none'
+        stroke-width='8'
+        stroke-linecap='round'
+        strokeDasharray={`${newDashArray} 846`}
       />
     </svg>
   );

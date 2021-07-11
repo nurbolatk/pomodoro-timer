@@ -24,15 +24,13 @@ export function Timer() {
   const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
-    console.log('am i running');
     if (isRunning) {
-      console.log('what about me?');
       const now = Date.now();
       const then = now + currentState.duration * 1000;
 
       const timer = setTimeout(() => {
         const secondsLeft = Math.round((then - Date.now()) / 1000);
-        console.log('is this it?', secondsLeft);
+
         if (secondsLeft >= 0) {
           setCurrentState({
             ...currentState,
@@ -98,12 +96,7 @@ export function Timer() {
       >
         <div className='time'>{displayTimeLeft(currentState.duration)}</div>
         <p className='timer-controls'>{isRunning ? 'pause' : 'start'}</p>
-        <Progress
-          time={currentState.initial}
-          isRunning={isRunning}
-          radius={150}
-          stroke={6}
-        />
+        <Progress progress={currentState.duration / currentState.initial} />
       </button>
     </main>
   );
