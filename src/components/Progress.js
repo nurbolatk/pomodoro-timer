@@ -1,4 +1,17 @@
-export const Progress = ({ progress }) => {
+import { useEffect, useState } from 'react'
+
+export const Progress = ({ current, max, isRunning, onComplete }) => {
+  const [animationDuration, setAnimationDuration] = useState(current)
+
+  useEffect(() => {
+    if (isRunning) {
+      setAnimationDuration(current - 1)
+    }
+  }, [current, isRunning])
+
+  // console.log({ current, animationDuration, isRunning, max })
+
+  const progress = animationDuration / max
   const newDashArray = (progress * 846).toFixed(0)
   return (
     <svg className="progress-overlay">

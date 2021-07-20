@@ -13,12 +13,8 @@ export function Timer() {
     isRunning: false,
   })
 
-  const [animationDuration, setAnimationDuration] = useState(currentState.duration)
-
   useEffect(() => {
     if (currentState.isRunning) {
-      setAnimationDuration(currentState.duration - 1)
-
       const now = Date.now()
       const then = now + currentState.duration * 1000
 
@@ -31,7 +27,6 @@ export function Timer() {
             state: currentState.state,
             duration: secondsLeft,
           })
-          setAnimationDuration(secondsLeft - 1)
         } else {
           if (currentState.state === 'work') {
             setCurrentState({
@@ -39,14 +34,12 @@ export function Timer() {
               duration: modes.short,
               isRunning: false,
             })
-            setAnimationDuration(modes.short)
           } else {
             setCurrentState({
               state: 'work',
               duration: modes.work,
               isRunning: false,
             })
-            setAnimationDuration(modes.work)
           }
         }
       }, 1000)
@@ -61,7 +54,6 @@ export function Timer() {
       duration: modes[newState],
       isRunning: false,
     })
-    setAnimationDuration(modes[newState])
   }
 
   function toggleIsRunning() {
@@ -77,7 +69,12 @@ export function Timer() {
       <button onClick={toggleIsRunning} className="timer-container">
         <div className="time">{displayTimeLeft(currentState.duration)}</div>
         <p className="timer-controls">{currentState.isRunning ? 'pause' : 'start'}</p>
-        <Progress progress={animationDuration / modes[currentState.state]} />
+        <Progress
+          key={currentState.state}
+          max={modes[currentState.state]}
+          current={currentState.duration}
+          isRunning={currentState.isRunning}
+        />
       </button>
     </main>
   )
