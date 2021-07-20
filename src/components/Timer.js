@@ -20,15 +20,17 @@ export function Timer() {
         } else {
           if (state.name === 'work') {
             resetTimer('short')
-          } else {
+          } else if (state.name === 'short') {
             resetTimer('long')
+          } else {
+            resetTimer('work')
           }
         }
       }, 1000)
 
       return () => clearTimeout(timer)
     }
-  }, [state, modes, resetTimer, tick])
+  }, [state, resetTimer, tick])
 
   function changeState(newState) {
     resetTimer(newState)
