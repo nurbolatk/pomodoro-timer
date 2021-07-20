@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export const Progress = ({ current, max, isRunning, onComplete }) => {
+export const Progress = ({ current, max, isRunning }) => {
   const [animationDuration, setAnimationDuration] = useState(current)
 
   useEffect(() => {
@@ -8,8 +8,6 @@ export const Progress = ({ current, max, isRunning, onComplete }) => {
       setAnimationDuration(current - 1)
     }
   }, [current, isRunning])
-
-  // console.log({ current, animationDuration, isRunning, max })
 
   const progress = animationDuration / max
   const newDashArray = (progress * 846).toFixed(0)

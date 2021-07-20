@@ -1,80 +1,46 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { PomodoroModesContext } from '../App'
 import { displayTimeLeft } from '../utils'
 import { Progress } from './Progress'
 import { TabGroup } from './TabGroup'
 
 export function Timer() {
-  const modes = useContext(PomodoroModesContext)
-
-  const [currentState, setCurrentState] = useState({
-    state: 'work',
-    duration: modes.work,
-    isRunning: false,
-  })
+  const { state, resetTimer, tick, toggleIsRunning, durations: modes } = useContext(PomodoroModesContext)
 
   useEffect(() => {
-    if (currentState.isRunning) {
+    if (state.isRunning) {
       const now = Date.now()
-      const then = now + currentState.duration * 1000
+      const then = now + state.duration * 1000
 
       const timer = setTimeout(() => {
         const secondsLeft = Math.round((then - Date.now()) / 1000)
 
         if (secondsLeft > 0) {
-          setCurrentState({
-            ...currentState,
-            state: currentState.state,
-            duration: secondsLeft,
-          })
+          tick(secondsLeft)
         } else {
-          if (currentState.state === 'work') {
-            setCurrentState({
-              state: 'short',
-              duration: modes.short,
-              isRunning: false,
-            })
+          if (state.name === 'work') {
+            resetTimer('short')
           } else {
-            setCurrentState({
-              state: 'work',
-              duration: modes.work,
-              isRunning: false,
-            })
+            resetTimer('long')
           }
         }
       }, 1000)
 
       return () => clearTimeout(timer)
     }
-  }, [currentState, modes])
+  }, [state, modes, resetTimer, tick])
 
   function changeState(newState) {
-    setCurrentState({
-      state: newState,
-      duration: modes[newState],
-      isRunning: false,
-    })
-  }
-
-  function toggleIsRunning() {
-    setCurrentState({
-      ...currentState,
-      isRunning: !currentState.isRunning,
-    })
+    resetTimer(newState)
   }
 
   return (
     <main>
-      <TabGroup currentState={currentState.state} onTabClick={changeState} />
+      <TabGroup currentState={state.name} onTabClick={changeState} />
       <button onClick={toggleIsRunning} className="timer-container">
-        <div className="time">{displayTimeLeft(currentState.duration)}</div>
-        <p className="timer-controls">{currentState.isRunning ? 'pause' : 'start'}</p>
-        <Progress
-          key={currentState.state}
-          max={modes[currentState.state]}
-          current={currentState.duration}
-          isRunning={currentState.isRunning}
-        />
+        <div className="time">{displayTimeLeft(state.duration)}</div>
+        <p className="timer-controls">{state.isRunning ? 'pause' : 'start'}</p>
+        <Progress key={state.name} max={modes[state.name]} current={state.duration} isRunning={state.isRunning} />
       </button>
     </main>
   )
