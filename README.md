@@ -1,5 +1,7 @@
 # Getting Started with Create React App
 
+![preview](https://sun9-2.userapi.com/impg/Eod2pQZO3B3TccizyR8VgJLN1DW3mxs8J6EgSA/47uDF1QyKdo.jpg?size=1920x1080&quality=96&sign=1ae0ffb6be1d0121c56c28a1aab289ef&type=album)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
